@@ -1,7 +1,7 @@
 ## 0.0.2
 
 - Better configuration for SQLite
-- Fixed issues with `db:schema:load` and `db:test:prepare`
+- Fixed issue with `db:schema:load`
 
 ## 0.0.1
 
