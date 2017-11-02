@@ -71,26 +71,24 @@ For web servers that fork, be sure to reconnect after forking (just like you do 
 
 ### Puma
 
-Add to `config/puma.rb`
+In `config/puma.rb`, add inside the `on_worker_boot` block
 
 ```ruby
-on_worker_boot do
-  CatalogRecord.establish_connection :"catalog_#{Rails.env}"
-end
+CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 ```
 
 ### Unicorn
 
-Add to `config/unicorn.rb`
+In `config/unicorn.rb`, add inside the `before_fork` block
 
 ```ruby
-before_fork do |server, worker|
-  CatalogRecord.connection.disconnect!
-end
+CatalogRecord.connection.disconnect!
+```
 
-after_fork do |server, worker|
-  CatalogRecord.establish_connection :"catalog_#{Rails.env}"
-end
+And inside the `after_fork` block
+
+```ruby
+CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 ```
 
 ## History
