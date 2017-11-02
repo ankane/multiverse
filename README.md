@@ -65,11 +65,9 @@ class Product < CatalogRecord
 end
 ```
 
-## Seeds
-
-Use `db/seeds.rb` for all databases
-
 ## Web Servers
+
+For web servers that fork, be sure to reconnect after forking (just like you do with `ActiveRecord::Base`)
 
 ### Puma
 
