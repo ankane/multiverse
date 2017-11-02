@@ -12,19 +12,30 @@ module Multiverse
 
         template "record.rb", "app/models/#{lower_name}_record.rb"
 
+        case ActiveRecord::Base.connection_config[:adapter]
+        when "sqlite3"
+          development_conf = "database: db/#{lower_name}_development.sqlite3"
+          test_conf = "database: db/#{lower_name}_test.sqlite3"
+          production_conf = "database: db/#{lower_name}_production.sqlite3"
+        else
+          development_conf = "database: #{lower_name}_development"
+          test_conf = "database: #{lower_name}_development"
+          production_conf = "url: <%= ENV['#{lower_name.upcase}_DATABASE_URL'] %>"
+        end
+
         append_to_file "config/database.yml" do
           "
 #{name}_development:
   <<: *default
-  database: #{lower_name}_development
+  #{development_conf}
 
 #{name}_test:
   <<: *default
-  database: #{lower_name}_test
+  #{test_conf}
 
 #{name}_production:
   <<: *default
-  url: <%= ENV['#{lower_name.upcase}_DATABASE_URL'] %>
+  #{production_conf}
 "
         end
 
