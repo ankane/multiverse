@@ -16,7 +16,6 @@ module Multiverse
 
   module Migrator
     def initialize(*_)
-      puts "Migrator#initialize"
       # ActiveRecord::Migration#initialize calls
       # ActiveRecord::SchemaMigration.create_table
       # ActiveRecord::InternalMetadata.create_table
