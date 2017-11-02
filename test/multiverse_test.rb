@@ -7,6 +7,7 @@ class MultiverseTest < Minitest::Test
 
   def test_all
     rails_version = ENV["RAILS_VERSION"] || "5.1.4"
+    gem_path = File.dirname(__dir__)
 
     Bundler.with_clean_env do
       FileUtils.rm_rf("/tmp/multiverse_app")
@@ -22,7 +23,7 @@ class MultiverseTest < Minitest::Test
 
         # add multiverse
         open("Gemfile", "a") do |f|
-          f.puts "gem 'multiverse', path: '/Users/andrew/open_source/multiverse'"
+          f.puts "gem 'multiverse', path: '#{gem_path}'"
         end
         system "bundle"
 
