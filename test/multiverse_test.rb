@@ -8,6 +8,7 @@ class MultiverseTest < Minitest::Test
   def test_all
     rails_version = ENV["RAILS_VERSION"] || "5.1.4"
     gem_path = File.dirname(__dir__)
+    clean = ENV["CLEAN"]
 
     Bundler.with_clean_env do
       FileUtils.rm_rf("/tmp/multiverse_app")
@@ -18,74 +19,95 @@ class MultiverseTest < Minitest::Test
           f.puts "source 'https://rubygems.org'"
           f.puts "gem 'rails', '#{rails_version}'"
         end
-        system "bundle --local"
-        system "bundle exec rails new . --force --skip-bundle"
+        cmd "bundle --local"
+        cmd "bundle exec rails new . --force --skip-bundle"
 
-        # add multiverse
-        open("Gemfile", "a") do |f|
-          f.puts "gem 'multiverse', path: '#{gem_path}'"
+        unless clean
+          # add multiverse
+          open("Gemfile", "a") do |f|
+            f.puts "gem 'multiverse', path: '#{gem_path}'"
+          end
         end
-        system "bundle --local"
+        cmd "bundle --local"
 
-        # generate new database
-        system "bin/rails generate multiverse:db catalog"
+        unless clean
+          # generate new database
+          cmd "bin/rails generate multiverse:db catalog"
+        end
 
         # test create
-        system "bin/rake db:create"
+        cmd "bin/rake db:create"
         assert File.exist?("db/development.sqlite3")
         assert File.exist?("db/test.sqlite3")
         assert !File.exist?("db/catalog_development.sqlite3")
         assert !File.exist?("db/catalog_test.sqlite3")
 
-        system "DB=catalog bin/rake db:create"
-        assert File.exist?("db/catalog_development.sqlite3")
-        assert File.exist?("db/catalog_test.sqlite3")
+        unless clean
+          cmd "DB=catalog bin/rake db:create"
+          assert File.exist?("db/catalog_development.sqlite3")
+          assert File.exist?("db/catalog_test.sqlite3")
+        end
 
         # test rails generatde model
-        system "bin/rails generate model User"
+        cmd "bin/rails generate model User"
         assert_includes File.read("app/models/user.rb"), "ApplicationRecord"
         # TODO assert migration file in right directory
 
-        system "DB=catalog bin/rails generate model Product"
-        assert_includes File.read("app/models/product.rb"), "CatalogRecord"
+        unless clean
+          cmd "DB=catalog bin/rails generate model Product"
+          assert_includes File.read("app/models/product.rb"), "CatalogRecord"
+        end
         # TODO assert migration file in right directory
 
         # test rails generate migration
-        system "bin/rails generate migration create_posts"
+        cmd "bin/rails generate migration create_posts"
         # TODO assert migration file in right directory, run on right DB
-        system "DB=catalog bin/rails generate migration create_items"
-        # TODO assert migration file in right directory, run on right DB
+
+        unless clean
+          cmd "DB=catalog bin/rails generate migration create_items"
+          # TODO assert migration file in right directory, run on right DB
+        end
 
         # test db:migrate
-        system "bin/rake db:migrate"
+        cmd "bin/rake db:migrate"
         assert_tables("development", ["users", "posts"])
 
-        system "DB=catalog bin/rake db:migrate"
-        assert_tables("catalog_development", ["products", "items"])
+        unless clean
+          cmd "DB=catalog bin/rake db:migrate"
+          assert_tables("catalog_development", ["products", "items"])
+        end
 
         # test db:rollback
-        system "bin/rake db:rollback"
+        cmd "bin/rake db:rollback"
         assert_tables("development", ["users"])
-        assert_tables("catalog_development", ["products", "items"])
 
-        system "DB=catalog bin/rake db:rollback"
-        assert_tables("catalog_development", ["products"])
+        unless clean
+          assert_tables("catalog_development", ["products", "items"])
+          cmd "DB=catalog bin/rake db:rollback"
+          assert_tables("catalog_development", ["products"])
+        end
 
         # test db:drop
-        system "bin/rake db:drop"
+        cmd "bin/rake db:drop"
         assert !File.exist?("db/development.sqlite3")
         assert !File.exist?("db/test.sqlite3")
 
-        system "DB=catalog bin/rake db:drop"
-        assert !File.exist?("db/catalog_development.sqlite3")
-        assert !File.exist?("db/catalog_test.sqlite3")
+        unless clean
+          cmd "DB=catalog bin/rake db:drop"
+          assert !File.exist?("db/catalog_development.sqlite3")
+          assert !File.exist?("db/catalog_test.sqlite3")
+        end
 
         # # test db:schema:load
-        system "bin/rake db:create db:schema:load"
+        cmd "bin/rake db:create db:schema:load"
         assert_tables("development", ["users"])
+        assert_tables("test", ["users"])
 
-        system "DB=catalog bin/rake db:create db:schema:load"
-        assert_tables("catalog_development", ["products"])
+        unless clean
+          cmd "DB=catalog bin/rake db:create db:schema:load"
+          assert_tables("catalog_development", ["products"])
+          assert_tables("catalog_test", ["products"])
+        end
 
         # test db:test:prepare
       end
@@ -93,6 +115,10 @@ class MultiverseTest < Minitest::Test
   end
 
   private
+
+  def cmd(command)
+    assert system(command)
+  end
 
   def assert_tables(dbname, tables)
     expected_tables = tables + ["ar_internal_metadata", "schema_migrations"]
