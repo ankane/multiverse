@@ -34,8 +34,8 @@ class MultiverseTest < Minitest::Test
         system "bin/rake db:create"
         assert File.exist?("db/development.sqlite3")
         assert File.exist?("db/test.sqlite3")
-        assert !File.exist?("catalog_development")
-        assert !File.exist?("catalog_test")
+        assert !File.exist?("db/catalog_development.sqlite3")
+        assert !File.exist?("db/catalog_test.sqlite3")
 
         system "DB=catalog bin/rake db:create"
         assert File.exist?("db/catalog_development.sqlite3")
@@ -51,35 +51,53 @@ class MultiverseTest < Minitest::Test
         # TODO assert migration file in right directory
 
         # test rails generate migration
-        # system "bin/rails generate migration add_name_to_users"
-        # system "DB=catalog bin/rails generate migration add_name_to_products"
+        system "bin/rails generate migration create_posts"
+        # TODO assert migration file in right directory, run on right DB
+        system "DB=catalog bin/rails generate migration create_items"
+        # TODO assert migration file in right directory, run on right DB
 
         # test db:migrate
         system "bin/rake db:migrate"
+        assert_tables("development", ["users", "posts"])
 
-        db = SQLite3::Database.new("db/development.sqlite3")
-        p db.execute("SELECT name FROM sqlite_master WHERE type = 'table'").to_a
-
-        # TODO assert table created in right DB, nothing created in catalog DB
         system "DB=catalog bin/rake db:migrate"
-        db2 = SQLite3::Database.new("db/catalog_development.sqlite3")
-        p db2.execute("SELECT name FROM sqlite_master WHERE type = 'table'").to_a
-        # TODO assert table created in right DB
+        assert_tables("catalog_development", ["products", "items"])
 
         # test db:rollback
-        # system "bin/rake db:rollback"
-        # system "DB=catalog bin/rake db:rollback"
+        system "bin/rake db:rollback"
+        assert_tables("development", ["users"])
+        assert_tables("catalog_development", ["products", "items"])
+
+        system "DB=catalog bin/rake db:rollback"
+        assert_tables("catalog_development", ["products"])
 
         # test db:drop
-        # system "bin/rake db:drop"
-        # system "DB=catalog bin/rake db:drop"
+        system "bin/rake db:drop"
+        assert !File.exist?("db/development.sqlite3")
+        assert !File.exist?("db/test.sqlite3")
+
+        system "DB=catalog bin/rake db:drop"
+        assert !File.exist?("db/catalog_development.sqlite3")
+        assert !File.exist?("db/catalog_test.sqlite3")
 
         # # test db:schema:load
-        # system "bin/rake db:create db:schema:load"
-        # system "DB=catalog bin/rake db:create db:schema:load"
+        system "bin/rake db:create db:schema:load"
+        assert_tables("development", ["users"])
+
+        system "DB=catalog bin/rake db:create db:schema:load"
+        assert_tables("catalog_development", ["products"])
 
         # test db:test:prepare
       end
     end
+  end
+
+  private
+
+  def assert_tables(dbname, tables)
+    expected_tables = tables + ["ar_internal_metadata", "schema_migrations"]
+    db = SQLite3::Database.new("db/#{dbname}.sqlite3")
+    actual_tables = db.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'").map(&:first)
+    assert_equal expected_tables.sort, actual_tables.sort
   end
 end
