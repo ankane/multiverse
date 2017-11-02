@@ -24,7 +24,7 @@ rails generate multiverse:db catalog
 
 This generates `CatalogRecord` class for models to inherit from and adds configuration to `config/database.yml`. It also creates a `db/catalog` directory for migrations and `schema.rb` to live.
 
-`rails` and `rake` commands will run for the original database by default. To run commands for the new database, use the `DB` environment variable. For instance:
+`rails` and `rake` commands run for the original database by default. To run commands for the new database, use the `DB` environment variable. For instance:
 
 Create the database
 
