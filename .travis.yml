@@ -10,5 +10,5 @@ notifications:
     on_success: never
     on_failure: change
 env:
-  - RAILS_VERSION=5.1.4
-  - RAILS_VERSION=5.0.6
+  - RAILS_VERSION=5.1.4 RAILS_ENV=development
+  - RAILS_VERSION=5.0.6 RAILS_ENV=development
