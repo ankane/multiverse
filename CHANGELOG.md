@@ -1,3 +1,7 @@
+## 0.0.3 [unreleased]
+
+- Fixed issue with `db:test:prepare`
+
 ## 0.0.2
 
 - Better configuration for SQLite

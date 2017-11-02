@@ -18,6 +18,22 @@ module Multiverse
         end
 
         namespace :test do
+          task load_schema: %w(db:test:purge) do
+            begin
+              should_reconnect = ActiveRecord::Base.connection_pool.active_connection?
+              ActiveRecord::Schema.verbose = false
+              ActiveRecord::Tasks::DatabaseTasks.load_schema ActiveRecord::Base.configurations[Multiverse.env("test")], :ruby, ENV["SCHEMA"]
+            ensure
+              if should_reconnect
+                ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[Multiverse.env(ActiveRecord::Tasks::DatabaseTasks.env)])
+              end
+            end
+          end
+
+          task load_structure: %w(db:test:purge) do
+            ActiveRecord::Tasks::DatabaseTasks.load_schema ActiveRecord::Base.configurations[Multiverse.env("test")], :sql, ENV["SCHEMA"]
+          end
+
           task purge: %w(environment load_config check_protected_environments) do
             ActiveRecord::Tasks::DatabaseTasks.purge ActiveRecord::Base.configurations[Multiverse.env("test")]
           end
