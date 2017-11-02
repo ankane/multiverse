@@ -117,8 +117,9 @@ class MultiverseTest < Minitest::Test
   private
 
   def cmd(command)
-    puts command
+    puts "> #{command}"
     assert system(command)
+    puts
   end
 
   def assert_tables(dbname, tables)
