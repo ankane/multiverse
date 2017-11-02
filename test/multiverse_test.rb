@@ -110,6 +110,13 @@ class MultiverseTest < Minitest::Test
         end
 
         # test db:test:prepare
+        cmd "bin/rake db:drop db:create db:test:prepare"
+        assert_tables("test", ["users"])
+
+        unless clean
+          cmd "DB=catalog bin/rake db:drop db:create db:test:prepare"
+          assert_tables("catalog_test", ["products"])
+        end
       end
     end
   end
