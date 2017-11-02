@@ -62,7 +62,7 @@ class MultiverseTest < Minitest::Test
 
         # test db:schema:load
         system "bin/rake db:create db:schema:load"
-        system "DB-catalog bin/rake db:create db:schema:load"
+        system "DB=catalog bin/rake db:create db:schema:load"
 
         # test db:test:prepare
       end

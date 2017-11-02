@@ -27,7 +27,7 @@ module Multiverse
     end
   end
 
-  module SchemaMigration
+  module Connection
     def connection
       Multiverse.record_class.connection
     end
