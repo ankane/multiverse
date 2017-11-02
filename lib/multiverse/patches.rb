@@ -17,15 +17,22 @@ module Multiverse
   module Migrator
     def initialize(*_)
       # ActiveRecord::Migration#initialize calls
-      # ActiveRecord::SchemaMigration.create_table
+      # ActiveRecord::SchemaMigration.create_table and
       # ActiveRecord::InternalMetadata.create_table
       # which both inherit from ActiveRecord::Base
       #
       # We need to change this for migrations
-      # but not for db:schema:load (messes up multiverse test env otherwise)
+      # but not for db:schema:load, as this
+      # will mess up the Multiverse test environment
       ActiveRecord::SchemaMigration.singleton_class.prepend(Multiverse::Connection)
       ActiveRecord::InternalMetadata.singleton_class.prepend(Multiverse::Connection)
       super
+    end
+  end
+
+  module Connection
+    def connection
+      Multiverse.record_class.connection
     end
   end
 
@@ -35,12 +42,6 @@ module Multiverse
       Multiverse.record_class.connection_pool.with_connection do |conn|
         super(conn, direction)
       end
-    end
-  end
-
-  module Connection
-    def connection
-      Multiverse.record_class.connection
     end
   end
 
