@@ -19,7 +19,7 @@ class MultiverseTest < Minitest::Test
           f.puts "source 'https://rubygems.org'"
           f.puts "gem 'rails', '#{rails_version}'"
         end
-        cmd "bundle --local"
+        cmd "bundle"
         cmd "bundle exec rails new . --force --skip-bundle"
 
         unless clean
@@ -28,7 +28,7 @@ class MultiverseTest < Minitest::Test
             f.puts "gem 'multiverse', path: '#{gem_path}'"
           end
         end
-        cmd "bundle --local"
+        cmd "bundle"
 
         unless clean
           # generate new database
