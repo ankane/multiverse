@@ -16,6 +16,14 @@ module Multiverse
           ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [Multiverse.migrate_path]
           ActiveRecord::Tasks::DatabaseTasks.db_dir = [Multiverse.db_dir]
         end
+
+        namespace :test do
+          task purge: %w(environment load_config check_protected_environments) do
+            ActiveRecord::Tasks::DatabaseTasks.purge ActiveRecord::Base.configurations[Multiverse.env("test")]
+            # for db:test:prepare, since we override SchemaMigration#connection
+            Multiverse.record_class.establish_connection Multiverse.env("test").to_sym
+          end
+        end
       end
     end
   end
