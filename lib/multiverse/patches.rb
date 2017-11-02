@@ -1,15 +1,11 @@
 module Multiverse
   module DatabaseTasks
     def each_current_configuration(environment)
-      if Multiverse.db
-        environments = ["#{Multiverse.db}_#{environment}"]
-        environments << "#{Multiverse.db}_test" if environment == "development"
-        self.migrations_paths = Multiverse.migrate_path
-        self.db_dir = Multiverse.db_dir
-      else
-        environments = [environment]
-        environments << "test" if environment == "development"
-      end
+      environments = [Multiverse.env(environment)]
+      environments << Multiverse.env("test") if environment == "development"
+
+      self.migrations_paths = Multiverse.migrate_path
+      self.db_dir = Multiverse.db_dir
 
       configurations = ActiveRecord::Base.configurations.values_at(*environments)
       configurations.compact.each do |configuration|

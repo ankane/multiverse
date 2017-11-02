@@ -30,6 +30,10 @@ module Multiverse
     def migrate_path
       "#{db_dir}/migrate"
     end
+
+    def env(environment)
+      db ? "#{db}_#{environment}" : environment
+    end
   end
 end
 
