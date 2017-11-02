@@ -98,7 +98,7 @@ class MultiverseTest < Minitest::Test
           assert !File.exist?("db/catalog_test.sqlite3")
         end
 
-        # # test db:schema:load
+        # test db:schema:load
         cmd "bin/rake db:create db:schema:load"
         assert_tables("development", ["users"])
         assert_tables("test", ["users"])
@@ -117,6 +117,7 @@ class MultiverseTest < Minitest::Test
   private
 
   def cmd(command)
+    puts command
     assert system(command)
   end
 
