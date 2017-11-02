@@ -40,7 +40,6 @@ end
 ActiveSupport.on_load(:active_record) do
   ActiveRecord::Tasks::DatabaseTasks.singleton_class.prepend Multiverse::DatabaseTasks
   ActiveRecord::Migration.prepend Multiverse::Migration
-  ActiveRecord::SchemaMigration.singleton_class.prepend Multiverse::Connection
-  ActiveRecord::InternalMetadata.singleton_class.prepend Multiverse::Connection
+  ActiveRecord::Migrator.prepend Multiverse::Migrator
   ActiveRecord::SchemaDumper.singleton_class.prepend Multiverse::SchemaDumper
 end
