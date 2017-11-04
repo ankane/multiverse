@@ -1,4 +1,4 @@
-## 0.0.3 [unreleased]
+## 0.0.3
 
 - Removed debug statement
 - Fixed issue with `db:test:prepare`
