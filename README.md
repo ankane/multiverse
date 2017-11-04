@@ -18,7 +18,7 @@ gem 'multiverse'
 
 ## Getting Started
 
-In this example, we’ll have a separate database for our e-commerce catalog, so we’ll call it `catalog`.
+In this example, we’ll have a separate database for our e-commerce catalog that we’ll call `catalog`.
 
 The first step is to generate the necessary files.
 
