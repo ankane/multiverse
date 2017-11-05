@@ -99,7 +99,7 @@ CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 
 ### Fixures
 
-[Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) will work automatically.
+[Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
 
 ### Database Cleaner
 
