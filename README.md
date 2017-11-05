@@ -97,7 +97,7 @@ CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 
 ## Testing
 
-### Fixures
+### Fixtures
 
 [Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
 
