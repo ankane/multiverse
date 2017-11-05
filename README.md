@@ -95,6 +95,26 @@ And inside the `after_fork` block
 CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 ```
 
+## Testing
+
+### Fixures
+
+[Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) will work automatically.
+
+### Database Cleaner
+
+Database Cleaner supports multiple connections out of the box.
+
+```ruby
+cleaner = DatabaseCleaner[:active_record, {model: CatalogRecord}]
+cleaner.strategy = :transaction
+cleaner.cleaning do
+  # code
+end
+```
+
+[Read more here](https://github.com/DatabaseCleaner/database_cleaner#how-to-use-with-multiple-orms)
+
 ## History
 
 View the [changelog](https://github.com/ankane/multiverse/blob/master/CHANGELOG.md)
