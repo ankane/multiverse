@@ -1,3 +1,7 @@
+## 0.0.4 [unreleased]
+
+- Fixed test conf
+
 ## 0.0.3
 
 - Removed debug statement

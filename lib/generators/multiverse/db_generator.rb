@@ -19,7 +19,7 @@ module Multiverse
           production_conf = "database: db/#{lower_name}_production.sqlite3"
         else
           development_conf = "database: #{lower_name}_development"
-          test_conf = "database: #{lower_name}_development"
+          test_conf = "database: #{lower_name}_test"
           production_conf = "url: <%= ENV['#{lower_name.upcase}_DATABASE_URL'] %>"
         end
 
