@@ -37,15 +37,15 @@ class MultiverseTest < Minitest::Test
 
         # test create
         cmd "bin/rake db:create"
-        assert File.exist?("db/development.sqlite3")
-        assert File.exist?("db/test.sqlite3")
-        assert !File.exist?("db/catalog_development.sqlite3")
-        assert !File.exist?("db/catalog_test.sqlite3")
+        assert database_exist?("development")
+        assert database_exist?("test")
+        assert !database_exist?("catalog_development")
+        assert !database_exist?("catalog_test")
 
         unless clean
           cmd "DB=catalog bin/rake db:create"
-          assert File.exist?("db/catalog_development.sqlite3")
-          assert File.exist?("db/catalog_test.sqlite3")
+          assert database_exist?("catalog_development")
+          assert database_exist?("catalog_test")
         end
 
         # test rails generatde model
@@ -89,13 +89,13 @@ class MultiverseTest < Minitest::Test
 
         # test db:drop
         cmd "bin/rake db:drop"
-        assert !File.exist?("db/development.sqlite3")
-        assert !File.exist?("db/test.sqlite3")
+        assert !database_exist?("development")
+        assert !database_exist?("test")
 
         unless clean
           cmd "DB=catalog bin/rake db:drop"
-          assert !File.exist?("db/catalog_development.sqlite3")
-          assert !File.exist?("db/catalog_test.sqlite3")
+          assert !database_exist?("catalog_development")
+          assert !database_exist?("catalog_test")
         end
 
         # test db:schema:load
@@ -129,10 +129,17 @@ class MultiverseTest < Minitest::Test
     puts
   end
 
+  def database_exist?(dbname)
+    File.exist?("db/#{dbname}.sqlite3")
+  end
+
   def assert_tables(dbname, tables)
     expected_tables = tables + ["ar_internal_metadata", "schema_migrations"]
-    db = SQLite3::Database.new("db/#{dbname}.sqlite3")
-    actual_tables = db.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'").map(&:first)
     assert_equal expected_tables.sort, actual_tables.sort
+  end
+
+  def actual_tables
+    db = SQLite3::Database.new("db/#{dbname}.sqlite3")
+    db.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'").map(&:first)
   end
 end
