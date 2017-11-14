@@ -8,7 +8,7 @@ module Multiverse
     attr_writer :db
 
     def db
-      @db ||= ENV["DB"]
+      @db ||= ENV["DB"].presence
     end
 
     def db_dir
@@ -22,9 +22,13 @@ module Multiverse
     end
 
     def record_class
-      record_class = parent_class_name.safe_constantize
-      abort "Missing model: #{parent_class_name}" unless record_class
-      record_class
+      if db
+        record_class = parent_class_name.safe_constantize
+        abort "Missing model: #{parent_class_name}" unless record_class
+        record_class
+      else
+        ActiveRecord::Base
+      end
     end
 
     def migrate_path

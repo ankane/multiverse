@@ -1,3 +1,7 @@
+## 0.1.1 [unreleased]
+
+- Better consistency with default behavior when no DB specified
+
 ## 0.1.0
 
 - Fixed test conf
