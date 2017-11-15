@@ -135,10 +135,10 @@ class MultiverseTest < Minitest::Test
 
   def assert_tables(dbname, tables)
     expected_tables = tables + ["ar_internal_metadata", "schema_migrations"]
-    assert_equal expected_tables.sort, actual_tables.sort
+    assert_equal expected_tables.sort, actual_tables(dbname).sort
   end
 
-  def actual_tables
+  def actual_tables(dbname)
     db = SQLite3::Database.new("db/#{dbname}.sqlite3")
     db.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'").map(&:first)
   end
