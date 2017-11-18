@@ -39,6 +39,14 @@ module Multiverse
           end
         end
       end
+
+      namespace :multiverse do
+        task :load_config do
+          ActiveRecord::Base.establish_connection(Multiverse.record_class.connection_config)
+        end
+      end
+
+      Rake::Task["db:migrate:status"].enhance ["multiverse:load_config"]
     end
   end
 end

@@ -1,5 +1,6 @@
 ## 0.1.1 [unreleased]
 
+- Fixed `db:migrate:status` when DB specified
 - Better consistency with default behavior when no DB specified
 
 ## 0.1.0

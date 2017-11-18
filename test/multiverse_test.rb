@@ -77,6 +77,13 @@ class MultiverseTest < Minitest::Test
           assert_tables("catalog_development", ["products", "items"])
         end
 
+        # test db:migrate:status
+        cmd "bin/rake db:migrate:status"
+
+        unless clean
+          cmd "DB=catalog bin/rake db:migrate:status"
+        end
+
         # test db:rollback
         cmd "bin/rake db:rollback"
         assert_tables("development", ["users"])
