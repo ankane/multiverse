@@ -1,4 +1,4 @@
-## 0.1.1 [unreleased]
+## 0.1.1
 
 - Fixed `db:migrate:status` when DB specified
 - Better consistency with default behavior when no DB specified
