@@ -1,3 +1,7 @@
+## 0.1.2 [unreleased]
+
+- Fixed `db:structure:dump` when DB specified
+
 ## 0.1.1
 
 - Fixed `db:migrate:status` when DB specified

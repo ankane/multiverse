@@ -124,6 +124,21 @@ class MultiverseTest < Minitest::Test
           cmd "DB=catalog bin/rake db:drop db:create db:test:prepare"
           assert_tables("catalog_test", ["products"])
         end
+
+        # test db:structure:dump
+        cmd "bin/rake db:create db:migrate"
+        cmd "bin/rake db:structure:dump"
+        cmd "bin/rake db:drop db:create db:structure:load"
+        assert_tables("development", ["users", "posts"])
+        assert_tables("test", ["users", "posts"])
+
+        unless clean
+          cmd "DB=catalog bin/rake db:create db:migrate"
+          cmd "DB=catalog bin/rake db:structure:dump"
+          cmd "DB=catalog bin/rake db:drop db:create db:structure:load"
+          assert_tables("catalog_development", ["products", "items"])
+          assert_tables("catalog_test", ["products", "items"])
+        end
       end
     end
   end

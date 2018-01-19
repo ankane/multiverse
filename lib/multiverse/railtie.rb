@@ -44,9 +44,14 @@ module Multiverse
         task :load_config do
           ActiveRecord::Base.establish_connection(Multiverse.record_class.connection_config)
         end
+
+        task :override_config do
+          ActiveRecord::Tasks::DatabaseTasks.current_config = ActiveRecord::Base.configurations[Multiverse.env(ActiveRecord::Tasks::DatabaseTasks.env)]
+        end
       end
 
       Rake::Task["db:migrate:status"].enhance ["multiverse:load_config"]
+      Rake::Task["db:structure:dump"].enhance ["multiverse:load_config", "multiverse:override_config"]
     end
   end
 end
