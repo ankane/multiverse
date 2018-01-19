@@ -155,14 +155,15 @@ class MultiverseTest < Minitest::Test
 
         # test db:schema:cache:dump
         cmd "bin/rake db:schema:cache:dump"
-        filename = "db/schema_cache.yml"
+        cache_ext = rails_version.start_with?("5.0") ? "dump" : "yml"
+        filename = "db/schema_cache.#{cache_ext}"
         assert_match "users", File.read(filename)
         cmd "bin/rake db:schema:cache:clear"
         assert !File.exist?(filename)
 
         unless clean
           cmd "DB=catalog bin/rake db:schema:cache:dump"
-          filename = "db/catalog/schema_cache.yml"
+          filename = "db/catalog/schema_cache.#{cache_ext}"
           assert_match "products", File.read(filename)
           cmd "DB=catalog bin/rake db:schema:cache:clear"
           assert !File.exist?(filename)
