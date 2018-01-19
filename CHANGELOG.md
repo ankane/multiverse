@@ -1,6 +1,7 @@
 ## 0.1.2 [unreleased]
 
 - Fixed `db:structure:dump` when DB specified
+- Fixed `db:schema:cache:dump` when DB specified
 
 ## 0.1.1
 

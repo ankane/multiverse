@@ -139,6 +139,21 @@ class MultiverseTest < Minitest::Test
           assert_tables("catalog_development", ["products", "items"])
           assert_tables("catalog_test", ["products", "items"])
         end
+
+        # test db:schema:cache:dump
+        cmd "bin/rake db:schema:cache:dump"
+        filename = "db/schema_cache.yml"
+        assert_match "users", File.read(filename)
+        cmd "bin/rake db:schema:cache:clear"
+        assert !File.exist?(filename)
+
+        unless clean
+          cmd "DB=catalog bin/rake db:schema:cache:dump"
+          filename = "db/catalog/schema_cache.yml"
+          assert_match "products", File.read(filename)
+          cmd "DB=catalog bin/rake db:schema:cache:clear"
+          assert !File.exist?(filename)
+        end
       end
     end
   end
