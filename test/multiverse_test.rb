@@ -48,6 +48,15 @@ class MultiverseTest < Minitest::Test
           assert database_exist?("catalog_test")
         end
 
+        # test db:seed
+        File.open("db/seeds.rb", "a"){ |f| f.write("puts __FILE__") }
+        cmd "bin/rake db:seed"
+
+        unless clean
+          File.open("db/catalog/seeds.rb", "a"){ |f| f.write("puts __FILE__") }
+          cmd "DB=catalog bin/rake db:seed"
+        end
+
         # test rails generatde model
         cmd "bin/rails generate model User"
         assert_includes File.read("app/models/user.rb"), "ApplicationRecord"

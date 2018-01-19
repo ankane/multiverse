@@ -15,6 +15,7 @@ module Multiverse
         task :load_config do
           ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [Multiverse.migrate_path]
           ActiveRecord::Tasks::DatabaseTasks.db_dir = [Multiverse.db_dir]
+          Rails.application.paths["db/seeds.rb"] = ["#{Multiverse.db_dir}/seeds.rb"]
         end
 
         namespace :test do
