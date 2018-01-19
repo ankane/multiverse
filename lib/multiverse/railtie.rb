@@ -38,16 +38,6 @@ module Multiverse
             ActiveRecord::Tasks::DatabaseTasks.purge ActiveRecord::Base.configurations[Multiverse.env("test")]
           end
         end
-
-        namespace :schema do
-          namespace :cache do
-            task dump: [:environment, :load_config] do
-              conn = Multiverse.record_class.connection
-              filename = File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "schema_cache.yml")
-              ActiveRecord::Tasks::DatabaseTasks.dump_schema_cache(conn, filename)
-            end
-          end
-        end
       end
 
       namespace :multiverse do
@@ -62,6 +52,7 @@ module Multiverse
 
       Rake::Task["db:migrate:status"].enhance ["multiverse:load_config"]
       Rake::Task["db:structure:dump"].enhance ["multiverse:load_config", "multiverse:override_config"]
+      Rake::Task["db:schema:cache:dump"].enhance ["multiverse:load_config"]
       Rake::Task["db:version"].enhance ["multiverse:load_config"]
     end
   end
