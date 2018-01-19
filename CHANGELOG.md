@@ -1,4 +1,4 @@
-## 0.1.2 [unreleased]
+## 0.1.2
 
 - Fixed `db:structure:dump` when DB specified
 - Fixed `db:schema:cache:dump` when DB specified
