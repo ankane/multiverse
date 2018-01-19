@@ -62,6 +62,7 @@ module Multiverse
 
       Rake::Task["db:migrate:status"].enhance ["multiverse:load_config"]
       Rake::Task["db:structure:dump"].enhance ["multiverse:load_config", "multiverse:override_config"]
+      Rake::Task["db:version"].enhance ["multiverse:load_config"]
     end
   end
 end
