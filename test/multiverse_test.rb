@@ -97,6 +97,17 @@ class MultiverseTest < Minitest::Test
         cmd "bin/rake db:version"
         cmd "DB=catalog bin/rake db:version"
 
+        # test:fixtures:load
+        assert_equal 0, row_count("development", "users")
+        unless clean
+          assert_equal 0, row_count("catalog_development", "products")
+        end
+        cmd "bin/rake db:fixtures:load"
+        assert_equal 2, row_count("development", "users")
+        unless clean
+          assert_equal 2, row_count("catalog_development", "products")
+        end
+
         # test db:rollback
         cmd "bin/rake db:rollback"
         assert_tables("development", ["users"])
@@ -186,6 +197,11 @@ class MultiverseTest < Minitest::Test
 
   def read_file(filename)
     File.read(filename).encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+  end
+
+  def row_count(dbname, table)
+    db = SQLite3::Database.new("db/#{dbname}.sqlite3")
+    db.execute("SELECT COUNT(*) FROM #{table}").first.first
   end
 
   def assert_tables(dbname, tables)
