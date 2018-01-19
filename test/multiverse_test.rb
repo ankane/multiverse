@@ -157,14 +157,14 @@ class MultiverseTest < Minitest::Test
         cmd "bin/rake db:schema:cache:dump"
         cache_ext = rails_version.start_with?("5.0") ? "dump" : "yml"
         filename = "db/schema_cache.#{cache_ext}"
-        assert_match "users", File.read(filename)
+        assert_match "users", read_file(filename)
         cmd "bin/rake db:schema:cache:clear"
         assert !File.exist?(filename)
 
         unless clean
           cmd "DB=catalog bin/rake db:schema:cache:dump"
           filename = "db/catalog/schema_cache.#{cache_ext}"
-          assert_match "products", File.read(filename)
+          assert_match "products", read_file(filename)
           cmd "DB=catalog bin/rake db:schema:cache:clear"
           assert !File.exist?(filename)
         end
@@ -182,6 +182,10 @@ class MultiverseTest < Minitest::Test
 
   def database_exist?(dbname)
     File.exist?("db/#{dbname}.sqlite3")
+  end
+
+  def read_file(filename)
+    File.read(filename).encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
   end
 
   def assert_tables(dbname, tables)
