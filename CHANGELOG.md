@@ -1,3 +1,7 @@
+## 0.1.3 [unreleased]
+
+- Fixed migration generation when DB specified for Rails < 5.0.3
+
 ## 0.1.2
 
 - Fixed `db:structure:dump` when DB specified
