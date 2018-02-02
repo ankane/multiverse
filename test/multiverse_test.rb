@@ -60,21 +60,21 @@ class MultiverseTest < Minitest::Test
         # test rails generatde model
         cmd "bin/rails generate model User"
         assert_includes File.read("app/models/user.rb"), "ApplicationRecord"
-        # TODO assert migration file in right directory
+        assert_migration "db", "create_users"
 
         unless clean
           cmd "DB=catalog bin/rails generate model Product"
           assert_includes File.read("app/models/product.rb"), "CatalogRecord"
+          assert_migration "db/catalog", "create_products"
         end
-        # TODO assert migration file in right directory
 
         # test rails generate migration
         cmd "bin/rails generate migration create_posts"
-        # TODO assert migration file in right directory, run on right DB
+        assert_migration "db", "create_posts"
 
         unless clean
           cmd "DB=catalog bin/rails generate migration create_items"
-          # TODO assert migration file in right directory, run on right DB
+          assert_migration "db/catalog", "create_items"
         end
 
         # test db:migrate
@@ -197,6 +197,11 @@ class MultiverseTest < Minitest::Test
 
   def read_file(filename)
     File.read(filename).encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+  end
+
+  def assert_migration(dir, name)
+    dir = "#{dir}/migrate"
+    assert Dir.entries(dir).any? { |f| f.include?(name) }, "#{dir} does not contain #{name} migration"
   end
 
   def row_count(dbname, table)
