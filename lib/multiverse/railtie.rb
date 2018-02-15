@@ -24,6 +24,10 @@ module Multiverse
           ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [Multiverse.migrate_path]
           ActiveRecord::Tasks::DatabaseTasks.db_dir = [Multiverse.db_dir]
           Rails.application.paths["db/seeds.rb"] = ["#{Multiverse.db_dir}/seeds.rb"]
+
+          if ActiveRecord.version >= Gem::Version.new("5.2.0.beta1")
+            ActiveRecord::Migrator.migrations_paths = [Multiverse.migrate_path]
+          end
         end
 
         namespace :test do

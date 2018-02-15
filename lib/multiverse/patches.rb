@@ -47,7 +47,11 @@ module Multiverse
 
   module SchemaDumper
     def dump(connection = ActiveRecord::Base.connection, stream = STDOUT, config = ActiveRecord::Base)
-      new(Multiverse.record_class.connection, generate_options(Multiverse.record_class)).dump(stream)
+      if ActiveRecord.version >= Gem::Version.new("5.2.0.beta1")
+        Multiverse.record_class.connection.create_schema_dumper(generate_options(Multiverse.record_class)).dump(stream)
+      else
+        new(Multiverse.record_class.connection, generate_options(Multiverse.record_class)).dump(stream)
+      end
       stream
     end
   end
