@@ -4,12 +4,20 @@ module Multiverse
       environments = [Multiverse.env(environment)]
       environments << Multiverse.env("test") if environment == "development"
 
+      # Rails 5.2 only
+      original_environments = [environment]
+      original_environments << "test" if environment == "development"
+
       self.migrations_paths = Multiverse.migrate_path
       self.db_dir = Multiverse.db_dir
 
       configurations = ActiveRecord::Base.configurations.values_at(*environments)
-      configurations.compact.each do |configuration|
-        yield configuration unless configuration['database'].blank?
+      configurations.compact.each_with_index do |configuration, i|
+        if ActiveRecord.version >= Gem::Version.new("5.2.0.beta1")
+          yield configuration, original_environments[i] unless configuration['database'].blank?
+        else
+          yield configuration unless configuration['database'].blank?
+        end
       end
     end
   end

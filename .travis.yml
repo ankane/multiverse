@@ -10,6 +10,6 @@ notifications:
     on_success: never
     on_failure: change
 env:
-  - RAILS_VERSION=5.2.0.rc1 RAILS_ENV=development DISABLE_DATABASE_ENVIRONMENT_CHECK=t
+  - RAILS_VERSION=5.2.0.rc1 RAILS_ENV=development
   - RAILS_VERSION=5.1.4 RAILS_ENV=development
   - RAILS_VERSION=5.0.6 RAILS_ENV=development
