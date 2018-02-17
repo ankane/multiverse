@@ -3,16 +3,13 @@ rvm: 2.4.2
 gemfile:
   - Gemfile
 sudo: false
-before_install:
-  - gem install bundler
-  - unset RAILS_ENV
-  - unset RACK_ENV
+before_install: gem install bundler
 script: bundle exec rake test
 notifications:
   email:
     on_success: never
     on_failure: change
 env:
-  - RAILS_VERSION=5.2.0.rc1
-  - RAILS_VERSION=5.1.5
-  - RAILS_VERSION=5.0.6
+  - RAILS_VERSION=5.2.0.rc1 RAILS_ENV=development
+  - RAILS_VERSION=5.1.4 RAILS_ENV=development
+  - RAILS_VERSION=5.0.6 RAILS_ENV=development
