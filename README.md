@@ -4,7 +4,7 @@
 
 One of the easiest ways to scale your database is to move large, infrequently-joined tables to a separate database. **ActiveRecord supports multiple databases, but Rails doesn’t provide a way to manage them.** Multiverse changes this.
 
-Works with Rails 5+
+Works with Rails 4.2+
 
 [![Build Status](https://travis-ci.org/ankane/multiverse.svg?branch=master)](https://travis-ci.org/ankane/multiverse)
 

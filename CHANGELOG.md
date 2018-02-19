@@ -1,8 +1,9 @@
-## 0.2.0 [unreleased]
+## 0.2.0
 
 - Added support for Rails 4.2
 - Fixed migration generation when DB specified for Rails < 5.0.3
 - Less dependencies
+- Less patching
 
 ## 0.1.2
 
