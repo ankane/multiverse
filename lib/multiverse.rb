@@ -1,5 +1,4 @@
 require "multiverse/generators"
-require "multiverse/patches"
 require "multiverse/railtie"
 require "multiverse/version"
 
@@ -18,32 +17,17 @@ module Multiverse
     end
 
     def parent_class_name
-      db ? "#{db.camelize}Record" : "ApplicationRecord"
-    end
-
-    def record_class
       if db
-        record_class = parent_class_name.safe_constantize
-        abort "Missing model: #{parent_class_name}" unless record_class
-        record_class
+        "#{db.camelize}Record"
+      elsif ActiveRecord::VERSION::MAJOR >= 5
+        "ApplicationRecord"
       else
-        ActiveRecord::Base
+        "ActiveRecord::Base"
       end
     end
 
     def migrate_path
       "#{db_dir}/migrate"
     end
-
-    def env(environment)
-      db ? "#{db}_#{environment}" : environment
-    end
   end
-end
-
-ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Tasks::DatabaseTasks.singleton_class.prepend Multiverse::DatabaseTasks
-  ActiveRecord::Migration.prepend Multiverse::Migration
-  ActiveRecord::Migrator.prepend Multiverse::Migrator
-  ActiveRecord::SchemaDumper.singleton_class.prepend Multiverse::SchemaDumper
 end

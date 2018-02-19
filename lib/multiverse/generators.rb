@@ -11,5 +11,11 @@ module Multiverse
         Multiverse.migrate_path
       end
     end
+
+    module MigrationTemplate
+      def migration_template(source, destination, config = {})
+        super(source, destination.sub("db/migrate", Multiverse.migrate_path), config)
+      end
+    end
   end
 end

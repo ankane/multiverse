@@ -3,14 +3,19 @@ require "rails/railtie"
 module Multiverse
   class Railtie < Rails::Railtie
     generators do
-      require "rails/generators/active_record/migration"
-      ActiveRecord::Generators::Migration.prepend(Multiverse::Generators::Migration)
+      if ActiveRecord::VERSION::MAJOR >= 5
+        require "rails/generators/active_record/migration"
+        ActiveRecord::Generators::Migration.prepend(Multiverse::Generators::Migration)
+      else
+        require "rails/generators/migration"
+        Rails::Generators::Migration.prepend(Multiverse::Generators::MigrationTemplate)
+      end
 
       require "rails/generators/active_record/model/model_generator"
       ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::ModelGenerator)
 
       # for Rails < 5.0.3, need to patch db_migrate_path in model and migration generator
-      if ActiveRecord.version < Gem::Version.new("5.0.3")
+      if ActiveRecord::VERSION::MAJOR == 5 && ActiveRecord.version < Gem::Version.new("5.0.3")
         ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::Migration)
 
         require "rails/generators/active_record/migration/migration_generator"
@@ -19,57 +24,37 @@ module Multiverse
     end
 
     rake_tasks do
-      namespace :db do
-        task :load_config do
-          ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [Multiverse.migrate_path]
-          ActiveRecord::Tasks::DatabaseTasks.db_dir = [Multiverse.db_dir]
-          Rails.application.paths["db/seeds.rb"] = ["#{Multiverse.db_dir}/seeds.rb"]
-
-          if ActiveRecord.version >= Gem::Version.new("5.2.0.beta1")
-            ActiveRecord::Migrator.migrations_paths = [Multiverse.migrate_path]
-          end
-        end
-
-        namespace :test do
-          task load_schema: %w(db:test:purge) do
-            begin
-              should_reconnect = ActiveRecord::Base.connection_pool.active_connection?
-              ActiveRecord::Schema.verbose = false
-              ActiveRecord::Tasks::DatabaseTasks.load_schema ActiveRecord::Base.configurations[Multiverse.env("test")], :ruby, ENV["SCHEMA"]
-            ensure
-              if should_reconnect
-                ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[Multiverse.env(ActiveRecord::Tasks::DatabaseTasks.env)])
-              end
-            end
-          end
-
-          task load_structure: %w(db:test:purge) do
-            ActiveRecord::Tasks::DatabaseTasks.load_schema ActiveRecord::Base.configurations[Multiverse.env("test")], :sql, ENV["SCHEMA"]
-          end
-
-          task purge: %w(environment load_config check_protected_environments) do
-            ActiveRecord::Tasks::DatabaseTasks.purge ActiveRecord::Base.configurations[Multiverse.env("test")]
-          end
-        end
-      end
-
       namespace :multiverse do
         task :load_config do
-          ActiveRecord::Base.establish_connection(Multiverse.record_class.connection_config)
-        end
+          if Multiverse.db
+            ActiveRecord::Tasks::DatabaseTasks.migrations_paths = [Multiverse.migrate_path]
+            ActiveRecord::Tasks::DatabaseTasks.db_dir = [Multiverse.db_dir]
+            Rails.application.paths["db/seeds.rb"] = ["#{Multiverse.db_dir}/seeds.rb"]
 
-        task :override_config do
-          ActiveRecord::Tasks::DatabaseTasks.current_config = ActiveRecord::Base.configurations[Multiverse.env(ActiveRecord::Tasks::DatabaseTasks.env)]
+            if ActiveRecord::Tasks::DatabaseTasks.database_configuration
+              new_config = {}
+              Rails.application.config.database_configuration.each do |env, config|
+                if env.start_with?("#{Multiverse.db}_")
+                  new_config[env.sub("#{Multiverse.db}_", "")] = config
+                end
+              end
+              ActiveRecord::Tasks::DatabaseTasks.database_configuration.merge!(new_config)
+            end
+
+            # load config
+            ActiveRecord::Base.configurations = ActiveRecord::Tasks::DatabaseTasks.database_configuration || {}
+            ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
+
+            ActiveRecord::Base.establish_connection
+
+            # need this to run again if environment is loaded afterwards
+            Rake::Task["db:load_config"].reenable
+          end
         end
       end
 
-      Rake::Task["db:migrate:status"].enhance ["multiverse:load_config"]
-      Rake::Task["db:structure:dump"].enhance ["multiverse:load_config", "multiverse:override_config"]
-      Rake::Task["db:schema:cache:dump"].enhance ["multiverse:load_config"]
-      Rake::Task["db:version"].enhance ["multiverse:load_config"]
-
-      if ActiveRecord.version >= Gem::Version.new("5.2.0.beta1")
-        Rake::Task["db:check_protected_environments"].enhance ["multiverse:load_config"]
+      Rake::Task["db:load_config"].enhance do
+        Rake::Task["multiverse:load_config"].execute
       end
     end
   end
