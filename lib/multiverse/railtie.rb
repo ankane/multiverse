@@ -14,7 +14,7 @@ module Multiverse
       require "rails/generators/active_record/model/model_generator"
       ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::ModelGenerator)
 
-      # for Rails < 5.0.3, need to patch db_migrate_path in model and migration generator
+      # for Rails < 5.0.3, need to patch migration_template in model and migration generator
       if ActiveRecord::VERSION::MAJOR == 5 && ActiveRecord.version < Gem::Version.new("5.0.3")
         ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::MigrationTemplate)
 
