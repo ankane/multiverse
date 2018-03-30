@@ -13,7 +13,7 @@ notifications:
     on_success: never
     on_failure: change
 env:
-  - RAILS_VERSION=5.2.0.rc1
-  - RAILS_VERSION=5.1.4
-  - RAILS_VERSION=5.0.6
+  - RAILS_VERSION=5.2.0.rc2
+  - RAILS_VERSION=5.1.6
+  - RAILS_VERSION=5.0.7
   - RAILS_VERSION=4.2.10
