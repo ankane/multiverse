@@ -11,20 +11,13 @@ module Multiverse
     end
 
     def db_dir
-      db_dir = Rails.application.config.paths["db"].first
-      db_dir = "#{db_dir}/#{db}" if db
-      abort "Unknown DB: #{db}" if db && !Dir.exist?(db_dir)
+      db_dir = "#{Rails.application.config.paths["db"].first}/#{db}"
+      abort "Unknown DB: #{db}" unless Dir.exist?(db_dir)
       db_dir
     end
 
     def parent_class_name
-      if db
-        "#{db.camelize}Record"
-      elsif ActiveRecord::VERSION::MAJOR >= 5
-        "ApplicationRecord"
-      else
-        "ActiveRecord::Base"
-      end
+      "#{db.camelize}Record"
     end
 
     def migrate_path
