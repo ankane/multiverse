@@ -10,9 +10,10 @@ class MultiverseTest < Minitest::Test
     clean = ENV["CLEAN"]
 
     Bundler.with_clean_env do
-      FileUtils.rm_rf("/tmp/multiverse_app")
-      Dir.mkdir("/tmp/multiverse_app")
-      Dir.chdir("/tmp/multiverse_app") do
+      app_dir = "/tmp/multiverse_#{rails_version.gsub(".", "")}"
+      FileUtils.rm_rf(app_dir)
+      Dir.mkdir(app_dir)
+      Dir.chdir(app_dir) do
         # create Rails app
         open("Gemfile", "w") do |f|
           f.puts "source 'https://rubygems.org'"
@@ -35,25 +36,25 @@ class MultiverseTest < Minitest::Test
         end
 
         # test create
-        cmd "bin/rake db:create"
+        cmd "bin/rails db:create"
         assert database_exist?("development")
         assert database_exist?("test")
         assert !database_exist?("catalog_development")
         assert !database_exist?("catalog_test")
 
         unless clean
-          cmd "DB=catalog bin/rake db:create"
+          cmd "DB=catalog bin/rails db:create"
           assert database_exist?("catalog_development")
           assert database_exist?("catalog_test")
         end
 
         # test db:seed
         File.open("db/seeds.rb", "a"){ |f| f.write("puts __FILE__") }
-        cmd "bin/rake db:seed"
+        cmd "bin/rails db:seed"
 
         unless clean
           File.open("db/catalog/seeds.rb", "a"){ |f| f.write("puts __FILE__") }
-          cmd "DB=catalog bin/rake db:seed"
+          cmd "DB=catalog bin/rails db:seed"
         end
 
         # test rails generatde model
@@ -77,105 +78,105 @@ class MultiverseTest < Minitest::Test
         end
 
         # test db:migrate
-        cmd "bin/rake db:migrate"
+        cmd "bin/rails db:migrate"
         assert_tables("development", ["users", "posts"])
 
         unless clean
-          cmd "DB=catalog bin/rake db:migrate"
+          cmd "DB=catalog bin/rails db:migrate"
           assert_tables("catalog_development", ["products", "items"])
         end
 
         # test db:migrate:status
-        cmd "bin/rake db:migrate:status"
+        cmd "bin/rails db:migrate:status"
 
         unless clean
-          cmd "DB=catalog bin/rake db:migrate:status"
+          cmd "DB=catalog bin/rails db:migrate:status"
         end
 
         # test db:version
-        cmd "bin/rake db:version"
-        cmd "DB=catalog bin/rake db:version"
+        cmd "bin/rails db:version"
+        cmd "DB=catalog bin/rails db:version"
 
         # test:fixtures:load
         assert_equal 0, row_count("development", "users")
         unless clean
           assert_equal 0, row_count("catalog_development", "products")
         end
-        cmd "bin/rake db:fixtures:load"
+        cmd "bin/rails db:fixtures:load"
         assert_equal 2, row_count("development", "users")
         unless clean
           assert_equal 2, row_count("catalog_development", "products")
         end
 
         # test db:rollback
-        cmd "bin/rake db:rollback"
+        cmd "bin/rails db:rollback"
         assert_tables("development", ["users"])
 
         unless clean
           assert_tables("catalog_development", ["products", "items"])
-          cmd "DB=catalog bin/rake db:rollback"
+          cmd "DB=catalog bin/rails db:rollback"
           assert_tables("catalog_development", ["products"])
         end
 
         # test db:drop
-        cmd "bin/rake db:drop"
+        cmd "bin/rails db:drop"
         assert !database_exist?("development")
         assert !database_exist?("test")
 
         unless clean
-          cmd "DB=catalog bin/rake db:drop"
+          cmd "DB=catalog bin/rails db:drop"
           assert !database_exist?("catalog_development")
           assert !database_exist?("catalog_test")
         end
 
         # test db:schema:load
-        cmd "bin/rake db:create db:schema:load"
+        cmd "bin/rails db:create db:schema:load"
         assert_tables("development", ["users"])
         assert_tables("test", ["users"])
 
         unless clean
-          cmd "DB=catalog bin/rake db:create db:schema:load"
+          cmd "DB=catalog bin/rails db:create db:schema:load"
           assert_tables("catalog_development", ["products"])
           assert_tables("catalog_test", ["products"])
         end
 
         # test db:test:prepare
-        cmd "bin/rake db:drop db:create db:test:prepare"
+        cmd "bin/rails db:drop db:create db:test:prepare"
         assert_tables("test", ["users"])
 
         unless clean
-          cmd "DB=catalog bin/rake db:drop db:create db:test:prepare"
+          cmd "DB=catalog bin/rails db:drop db:create db:test:prepare"
           assert_tables("catalog_test", ["products"])
         end
 
         # test db:structure:dump
-        cmd "bin/rake db:create db:migrate"
-        cmd "bin/rake db:structure:dump"
-        cmd "bin/rake db:drop db:create db:structure:load"
+        cmd "bin/rails db:create db:migrate"
+        cmd "bin/rails db:structure:dump"
+        cmd "bin/rails db:drop db:create db:structure:load"
         assert_tables("development", ["users", "posts"])
         assert_tables("test", ["users", "posts"])
 
         unless clean
-          cmd "DB=catalog bin/rake db:create db:migrate"
-          cmd "DB=catalog bin/rake db:structure:dump"
-          cmd "DB=catalog bin/rake db:drop db:create db:structure:load"
+          cmd "DB=catalog bin/rails db:create db:migrate"
+          cmd "DB=catalog bin/rails db:structure:dump"
+          cmd "DB=catalog bin/rails db:drop db:create db:structure:load"
           assert_tables("catalog_development", ["products", "items"])
           assert_tables("catalog_test", ["products", "items"])
         end
 
         # test db:schema:cache:dump
-        cmd "bin/rake db:schema:cache:dump"
+        cmd "bin/rails db:schema:cache:dump"
         cache_ext = rails_version >= "5.1" ? "yml" : "dump"
         filename = "db/schema_cache.#{cache_ext}"
         assert_match "users", read_file(filename)
-        cmd "bin/rake db:schema:cache:clear"
+        cmd "bin/rails db:schema:cache:clear"
         assert !File.exist?(filename)
 
         unless clean
-          cmd "DB=catalog bin/rake db:schema:cache:dump"
+          cmd "DB=catalog bin/rails db:schema:cache:dump"
           filename = "db/catalog/schema_cache.#{cache_ext}"
           assert_match "products", read_file(filename)
-          cmd "DB=catalog bin/rake db:schema:cache:clear"
+          cmd "DB=catalog bin/rails db:schema:cache:clear"
           assert !File.exist?(filename)
         end
       end
@@ -185,6 +186,7 @@ class MultiverseTest < Minitest::Test
   private
 
   def cmd(command)
+    command = command.sub("bin/rails db", "bin/rake db") unless rails5?
     puts "> #{command}"
     assert system(command)
     puts

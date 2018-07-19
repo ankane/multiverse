@@ -33,7 +33,7 @@ This creates a `CatalogRecord` class for models to inherit from and adds configu
 Create the database
 
 ```sh
-DB=catalog rake db:create
+DB=catalog rails db:create
 ```
 
 Create a migration
@@ -45,13 +45,13 @@ DB=catalog rails generate migration add_name_to_products
 Run migrations
 
 ```sh
-DB=catalog rake db:migrate
+DB=catalog rails db:migrate
 ```
 
 Rollback
 
 ```sh
-DB=catalog rake db:rollback
+DB=catalog rails db:rollback
 ```
 
 ## Models
