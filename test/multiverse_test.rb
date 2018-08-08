@@ -193,7 +193,7 @@ class MultiverseTest < Minitest::Test
   end
 
   def rails_version
-    ENV["RAILS_VERSION"] || "5.1.6"
+    ENV["RAILS_VERSION"] || "5.2.1"
   end
 
   def database_exist?(dbname)
