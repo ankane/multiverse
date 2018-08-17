@@ -20,7 +20,7 @@ class MultiverseTest < Minitest::Test
           f.puts "gem 'rails', '#{rails_version}'"
         end
         cmd "bundle"
-        cmd "bundle exec rails new . --force --skip-bundle"
+        cmd "bundle exec rails new . --force --skip-bundle #{ENV["API"] ? "--api" : nil}"
 
         unless clean
           # add multiverse
