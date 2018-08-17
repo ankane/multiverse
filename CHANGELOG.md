@@ -2,6 +2,7 @@
 
 - Added support for `config.paths["db"]`
 - Fixed migration generation when DB specified for Rails < 5.0.2
+- Fixed Rails API
 
 ## 0.2.0
 

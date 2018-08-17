@@ -3,19 +3,17 @@ require "rails/railtie"
 module Multiverse
   class Railtie < Rails::Railtie
     generators do
-      if ActiveRecord::VERSION::MAJOR >= 5
-        require "rails/generators/active_record/migration"
-        ActiveRecord::Generators::Migration.prepend(Multiverse::Generators::Migration)
-      else
-        require "rails/generators/migration"
-        Rails::Generators::Migration.prepend(Multiverse::Generators::MigrationTemplate)
-      end
+      ActiveSupport.on_load(:active_record) do
+        if ActiveRecord::VERSION::MAJOR >= 5
+          require "rails/generators/active_record/migration"
+          ActiveRecord::Generators::Migration.prepend(Multiverse::Generators::Migration)
+        else
+          require "rails/generators/migration"
+          Rails::Generators::Migration.prepend(Multiverse::Generators::MigrationTemplate)
+        end
 
-      require "rails/generators/active_record/model/model_generator"
-      ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::ModelGenerator)
-
-      # for Rails < 5.0.3, need to patch migration_template in model and migration generator
-      if ActiveRecord::VERSION::MAJOR == 5 && ActiveRecord.version < Gem::Version.new("5.0.3")
+        require "rails/generators/active_record/model/model_generator"
+        ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::ModelGenerator)
         ActiveRecord::Generators::ModelGenerator.prepend(Multiverse::Generators::MigrationTemplate)
 
         require "rails/generators/active_record/migration/migration_generator"

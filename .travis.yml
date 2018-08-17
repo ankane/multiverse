@@ -14,6 +14,7 @@ notifications:
     on_failure: change
 env:
   - RAILS_VERSION=5.2.1
+  - RAILS_VERSION=5.2.1 API=t
   - RAILS_VERSION=5.1.6
   - RAILS_VERSION=5.0.7
   - RAILS_VERSION=4.2.10
