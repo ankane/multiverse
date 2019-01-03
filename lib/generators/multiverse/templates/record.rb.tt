@@ -1,4 +1,4 @@
-class <%= name.camelize %>Record < ActiveRecord::Base
+class <%= name.camelize %>Record < ApplicationRecord
   self.abstract_class = true
   establish_connection :"<%= name.underscore %>_#{Rails.env}"
 end
