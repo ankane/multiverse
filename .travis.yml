@@ -1,10 +1,9 @@
 language: ruby
-rvm: 2.5.1
+rvm: 2.5.3
 gemfile:
   - Gemfile
 sudo: false
 before_install:
-  - gem install bundler
   - unset RAILS_ENV
   - unset RACK_ENV
 script: bundle exec rake test
@@ -17,4 +16,4 @@ env:
   - RAILS_VERSION=5.2.1 API=t
   - RAILS_VERSION=5.1.6
   - RAILS_VERSION=5.0.7
-  - RAILS_VERSION=4.2.10
+  - RAILS_VERSION=4.2.11
