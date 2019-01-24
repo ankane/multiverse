@@ -101,6 +101,14 @@ CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 
 [Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
 
+### RSpec
+
+After running migrations for additional databases, run:
+
+```sh
+DB=catalog rails db:test:prepare
+```
+
 ### Database Cleaner
 
 Database Cleaner supports multiple connections out of the box.
