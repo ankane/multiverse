@@ -71,6 +71,8 @@ end
 
 ## Web Servers
 
+*Only necessary in Rails < 5.2*
+
 For web servers that fork, be sure to reconnect after forking (just like you do with `ActiveRecord::Base`)
 
 ### Puma
