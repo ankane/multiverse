@@ -2,7 +2,7 @@
 
 :fire: Multiple databases for Rails
 
-One of the easiest ways to scale your database is to move large, infrequently-joined tables to a separate database. **ActiveRecord supports multiple databases, but Rails doesn’t provide a way to manage them.** Multiverse changes this.
+**ActiveRecord supports multiple databases, but Rails doesn’t provide a way to manage them.** Multiverse changes this.
 
 Works with Rails 4.2+
 
