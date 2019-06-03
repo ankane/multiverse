@@ -103,6 +103,8 @@ CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 
 [Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
 
+**Note:** Referential integrity is not disabled on additional databases when fixtures are loaded, so you may run into issues if you use foreign keys.
+
 ### RSpec
 
 After running migrations for additional databases, run:
@@ -124,6 +126,15 @@ end
 ```
 
 [Read more here](https://github.com/DatabaseCleaner/database_cleaner#how-to-use-with-multiple-orms)
+
+## Limitations
+
+There are a few features that aren’t supported on additional databases.
+
+- Pending migration check
+- `schema_cache.yml`
+
+Also note that `ActiveRecord::Migration.maintain_test_schema!` doesn’t affect additional databases.
 
 ## History
 
