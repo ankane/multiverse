@@ -4,7 +4,7 @@
 
 **ActiveRecord supports multiple databases, but Rails < 6 doesn’t provide a way to manage them.** Multiverse changes this.
 
-Plus, it’s easy to [upgrade to Rails 6](#upgrading-to-rails-6) when needed.
+Plus, it’s easy to [upgrade to Rails 6](#upgrading-to-rails-6) when you get there.
 
 Works with Rails 4.2+
 
