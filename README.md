@@ -136,6 +136,72 @@ There are a few features that aren’t supported on additional databases.
 
 Also note that `ActiveRecord::Migration.maintain_test_schema!` doesn’t affect additional databases.
 
+## Upgrading to Rails 6
+
+Rails 6 provides a way to manage multiple databases :tada:
+
+To upgrade from Multiverse, nest your database configuration in `config/database.yml`:
+
+```yml
+catalog_default: &catalog_default
+  adapter: postgresql
+  migrations_paths: db/catalog/migrate
+
+development:
+  primary:
+    database: ...
+  catalog:
+    <<: *catalog_default
+    database: ...
+
+test:
+  primary:
+    database: ...
+  catalog:
+    <<: *catalog_default
+    database: ...
+
+production:
+  primary:
+    database: ...
+  catalog:
+    <<: *catalog_default
+    database: ...
+```
+
+Then change `establish_connection` in `app/models/catalog_record.rb` to:
+
+```rb
+class CatalogRecord < ActiveRecord::Base
+  establish_connection :catalog
+end
+```
+
+And move `db/catalog/schema.rb` to `db/catalog_schema.rb` (or `db/catalog/structure.sql` to `db/catalog_structure.sql`).
+
+Then remove `multiverse` from your Gemfile. :tada:
+
+Now you can use the updated commands:
+
+```sh
+rails db:migrate          # run all
+rails db:migrate:catalog  # runs catalog only
+```
+
+Generate migrations with:
+
+```sh
+rails generate migration add_brand_to_products --database=catalog
+```
+
+And models with:
+
+```sh
+rails generate model Product --database=catalog --parent=CatalogRecord
+```
+
+Happy scaling!
+
 ## History
 
 View the [changelog](https://github.com/ankane/multiverse/blob/master/CHANGELOG.md)
