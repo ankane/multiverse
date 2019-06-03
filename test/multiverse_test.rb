@@ -23,9 +23,11 @@ class MultiverseTest < Minitest::Test
         cmd "bundle exec rails new . --force --skip-bundle #{ENV["API"] ? "--api" : nil}"
 
         # sqlite fix
-        gemfile = File.read("Gemfile")
-        gemfile = gemfile.sub("'sqlite3'", "'sqlite3', '< 1.4.0'")
-        File.open("Gemfile", "w") {|file| file.puts(gemfile) }
+        if rails_version.to_i < 6
+          gemfile = File.read("Gemfile")
+          gemfile = gemfile.sub("'sqlite3'", "'sqlite3', '< 1.4.0'")
+          File.open("Gemfile", "w") {|file| file.puts(gemfile) }
+        end
 
         unless clean
           # add multiverse
@@ -201,7 +203,7 @@ class MultiverseTest < Minitest::Test
   end
 
   def rails_version
-    ENV["RAILS_VERSION"] || "5.2.2.1"
+    ENV["RAILS_VERSION"] || "5.2.3"
   end
 
   def database_exist?(dbname)
@@ -234,7 +236,6 @@ class MultiverseTest < Minitest::Test
   end
 
   def rails5?
-    # should work until Rails 10 :)
-    rails_version >= "5"
+    rails_version.to_i > 5
   end
 end

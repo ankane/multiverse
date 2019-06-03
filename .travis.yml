@@ -1,6 +1,6 @@
 dist: xenial
 language: ruby
-rvm: 2.6.2
+rvm: 2.6.3
 gemfile:
   - Gemfile
 sudo: false
@@ -13,8 +13,9 @@ notifications:
     on_success: never
     on_failure: change
 env:
-  - RAILS_VERSION=5.2.2.1
-  - RAILS_VERSION=5.2.2.1 API=t
-  - RAILS_VERSION=5.1.6.2
+  - RAILS_VERSION=6.0.0.rc1
+  - RAILS_VERSION=5.2.3
+  - RAILS_VERSION=5.2.3 API=t
+  - RAILS_VERSION=5.1.7
   - RAILS_VERSION=5.0.7.2
   - RAILS_VERSION=4.2.11.1
