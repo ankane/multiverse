@@ -236,6 +236,6 @@ class MultiverseTest < Minitest::Test
   end
 
   def rails5?
-    rails_version.to_i > 5
+    rails_version.to_i >= 5
   end
 end
