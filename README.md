@@ -191,7 +191,7 @@ rails db:migrate:catalog  # runs catalog only
 Generate migrations with:
 
 ```sh
-rails generate migration add_brand_to_products --database=catalog
+rails generate migration add_name_to_products --database=catalog
 ```
 
 And models with:
