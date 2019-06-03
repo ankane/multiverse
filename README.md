@@ -4,6 +4,8 @@
 
 **ActiveRecord supports multiple databases, but Rails < 6 doesn’t provide a way to manage them.** Multiverse changes this.
 
+Plus, it’s easy to [upgrade to Rails 6](#upgrading-to-rails-6) when needed.
+
 Works with Rails 4.2+
 
 [![Build Status](https://travis-ci.org/ankane/multiverse.svg?branch=master)](https://travis-ci.org/ankane/multiverse)
@@ -143,12 +145,15 @@ Rails 6 provides a way to manage multiple databases :tada:
 To upgrade from Multiverse, nest your database configuration in `config/database.yml`:
 
 ```yml
+# this should be similar to default, but with migrations_paths
 catalog_default: &catalog_default
-  adapter: postgresql
+  adapter: ...
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   migrations_paths: db/catalog/migrate
 
 development:
   primary:
+    <<: *default
     database: ...
   catalog:
     <<: *catalog_default
@@ -156,6 +161,7 @@ development:
 
 test:
   primary:
+    <<: *default
     database: ...
   catalog:
     <<: *catalog_default
@@ -163,6 +169,7 @@ test:
 
 production:
   primary:
+    <<: *default
     database: ...
   catalog:
     <<: *catalog_default
