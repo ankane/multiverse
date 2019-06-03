@@ -2,7 +2,7 @@
 
 :fire: Multiple databases for Rails
 
-**ActiveRecord supports multiple databases, but Rails doesn’t provide a way to manage them.** Multiverse changes this.
+**ActiveRecord supports multiple databases, but Rails < 6 doesn’t provide a way to manage them.** Multiverse changes this.
 
 Works with Rails 4.2+
 
