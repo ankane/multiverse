@@ -149,7 +149,7 @@ To upgrade from Multiverse, nest your database configuration in `config/database
 catalog_default: &catalog_default
   adapter: ...
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  migrations_paths: db/catalog/migrate
+  migrations_paths: db/catalog_migrate
 
 development:
   primary:
@@ -184,7 +184,10 @@ class CatalogRecord < ActiveRecord::Base
 end
 ```
 
-And move `db/catalog/schema.rb` to `db/catalog_schema.rb` (or `db/catalog/structure.sql` to `db/catalog_structure.sql`).
+And move:
+
+- `db/catalog/migrate` to `db/catalog_migrate`
+- `db/catalog/schema.rb` to `db/catalog_schema.rb` (or `db/catalog/structure.sql` to `db/catalog_structure.sql`).
 
 Then remove `multiverse` from your Gemfile. :tada:
 
