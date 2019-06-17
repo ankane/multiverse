@@ -103,7 +103,7 @@ CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 
 ### Fixtures
 
-[Rails fixtures](http://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
+[Rails fixtures](https://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
 
 **Note:** Referential integrity is not disabled on additional databases when fixtures are loaded, so you may run into issues if you use foreign keys.
 
