@@ -36,7 +36,7 @@ module Multiverse
                   new_config[env.sub("#{Multiverse.db}_", "")] = config
                 end
               end
-              ActiveRecord::Tasks::DatabaseTasks.database_configuration.merge!(new_config)
+              ActiveRecord::Tasks::DatabaseTasks.database_configuration = new_config
             end
 
             # load config

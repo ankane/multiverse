@@ -1,3 +1,7 @@
+## 0.2.2 [unreleased]
+
+- Raise error when database not in `database.yml`
+
 ## 0.2.1
 
 - Added support for `config.paths["db"]`

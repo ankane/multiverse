@@ -37,6 +37,17 @@ class MultiverseTest < Minitest::Test
         end
         cmd "bundle"
 
+        # test unknown database
+        unless clean
+          cmd "DB=other bin/rails db:create", succeed: false
+        end
+
+        # test not in database.yml
+        unless clean
+          Dir.mkdir "db/other"
+          cmd "DB=other bin/rails db:create", succeed: false
+        end
+
         unless clean
           # generate new database
           cmd "bin/rails generate multiverse:db catalog"
@@ -195,10 +206,15 @@ class MultiverseTest < Minitest::Test
 
   private
 
-  def cmd(command)
+  def cmd(command, succeed: true)
     command = command.sub("bin/rails db", "bin/rake db") unless rails5?
     puts "> #{command}"
-    assert system(command)
+    result = system(command)
+    if succeed
+      assert result, "Expected command to succeed"
+    else
+      assert !result, "Expected command to fail"
+    end
     puts
   end
 
