@@ -1,6 +1,6 @@
 ## 0.2.2 [unreleased]
 
-- Raise error when database not in `database.yml`
+- Raise error when DB specified not in `database.yml`
 
 ## 0.2.1
 

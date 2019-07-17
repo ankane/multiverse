@@ -36,6 +36,7 @@ module Multiverse
                   new_config[env.sub("#{Multiverse.db}_", "")] = config
                 end
               end
+              abort "Unknown DB: #{Multiverse.db}" if new_config.empty?
               ActiveRecord::Tasks::DatabaseTasks.database_configuration = new_config
             end
 
