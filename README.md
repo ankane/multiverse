@@ -136,7 +136,7 @@ There are a few features that aren’t supported on additional databases.
 - Pending migration check
 - `schema_cache.yml`
 
-Also note that `ActiveRecord::Migration.maintain_test_schema!` doesn’t affect additional databases.
+Also note that `ActiveRecord::Migration.maintain_test_schema!` doesn’t affect additional databases, and you may run into errors with fixtures if the additional databases aren’t the same type as the primary.
 
 ## Upgrading to Rails 6
 
