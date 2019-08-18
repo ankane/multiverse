@@ -105,7 +105,7 @@ CatalogRecord.establish_connection :"catalog_#{Rails.env}"
 
 [Rails fixtures](https://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures) work automatically.
 
-**Note:** Referential integrity is not disabled on additional databases when fixtures are loaded, so you may run into issues if you use foreign keys.
+**Note:** Referential integrity is not disabled on additional databases when fixtures are loaded, so you may run into issues if you use foreign keys. Also, you may run into errors with fixtures if the additional databases aren’t the same type as the primary.
 
 ### RSpec
 
@@ -136,7 +136,7 @@ There are a few features that aren’t supported on additional databases.
 - Pending migration check
 - `schema_cache.yml`
 
-Also note that `ActiveRecord::Migration.maintain_test_schema!` doesn’t affect additional databases, and you may run into errors with fixtures if the additional databases aren’t the same type as the primary.
+Also note that `ActiveRecord::Migration.maintain_test_schema!` doesn’t affect additional databases.
 
 ## Upgrading to Rails 6
 
