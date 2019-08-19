@@ -13,7 +13,7 @@ notifications:
     on_success: never
     on_failure: change
 env:
-  - RAILS_VERSION=6.0.0.rc1
+  - RAILS_VERSION=6.0.0
   - RAILS_VERSION=5.2.3
   - RAILS_VERSION=5.2.3 API=t
   - RAILS_VERSION=5.1.7
