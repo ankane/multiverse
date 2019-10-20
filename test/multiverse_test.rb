@@ -20,7 +20,7 @@ class MultiverseTest < Minitest::Test
           f.puts "gem 'rails', '#{rails_version}'"
         end
         cmd "bundle"
-        cmd "bundle exec rails new . --force --skip-bundle #{ENV["API"] ? "--api" : nil}"
+        cmd "bundle exec rails new . --force --skip-bundle --skip-sprockets #{ENV["API"] ? "--api" : nil}"
 
         # sqlite fix
         if rails_version.to_i < 5.1
