@@ -1,4 +1,4 @@
-## 0.2.2 [unreleased]
+## 0.2.2
 
 - Raise error when DB specified not in `database.yml`
 
