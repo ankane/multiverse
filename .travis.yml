@@ -7,10 +7,9 @@ before_install:
   - unset RACK_ENV
 script: bundle exec rake test
 jobs:
-  allow_failures:
+  include:
     - rvm: 2.7
       env: RAILS_VERSION=6.0.2.1
-  include:
     - rvm: 2.6
       env: RAILS_VERSION=5.2.4.1
     - rvm: 2.6
@@ -21,6 +20,9 @@ jobs:
       env: RAILS_VERSION=5.1.7
     - rvm: 2.4
       env: RAILS_VERSION=4.2.11.1
+  allow_failures:
+    - rvm: 2.7
+      env: RAILS_VERSION=6.0.2.1
 notifications:
   email:
     on_success: never
