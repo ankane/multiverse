@@ -23,9 +23,11 @@ class MultiverseTest < Minitest::Test
         cmd "bundle exec rails new . --force --skip-bundle --skip-sprockets #{ENV["FLAGS"]}"
 
         # sqlite fix
-        if rails_version.to_i < 5.1
-          gemfile = File.read("Gemfile")
-          gemfile = gemfile.sub("'sqlite3'", "'sqlite3', '< 1.4.0'")
+        if rails_version.to_f < 5.1
+          gemfile = File.read("Gemfile").sub("'sqlite3'", "'sqlite3', '< 1.4.0'")
+          File.open("Gemfile", "w") {|file| file.puts(gemfile) }
+        elsif rails_version.to_f == 6.0
+          gemfile = File.read("Gemfile").sub("'sqlite3'", "'sqlite3', '~> 1.4'")
           File.open("Gemfile", "w") {|file| file.puts(gemfile) }
         end
 
