@@ -14,7 +14,7 @@ jobs:
           rails: 5.2.4.3
         - ruby: 2.6
           rails: 5.2.4.3
-          api: true
+          flags: --api
         - ruby: 2.5
           rails: 5.1.7
         - ruby: 2.4
@@ -32,4 +32,4 @@ jobs:
     - run: bundle exec rake test
       env:
         RAILS_VERSION: ${{ matrix.rails }}
-        API: ${{ matrix.api }}
+        FLAGS: ${{ matrix.flags }}
