@@ -21,16 +21,14 @@ jobs:
           rails: 5.0.7.2
         - ruby: 2.4
           rails: 4.2.11.3
+          bundler: 1
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
+        bundler: ${{ matrix.bundler }}
         bundler-cache: true
-    - if: ${{ startsWith(matrix.rails, '4.2.') }}
-      run: |
-        gem uninstall bundler
-        gem install bundler -v '~> 1'
     - run: bundle exec rake test
       env:
         RAILS_VERSION: ${{ matrix.rails }}
