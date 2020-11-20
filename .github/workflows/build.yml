@@ -28,7 +28,9 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
     - if: ${{ startsWith(matrix.rails, '4.2.') }}
-      run: gem install bundler -v '~> 1'
+      run: |
+        gem uninstall bundler
+        gem install bundler -v '~> 1'
     - run: bundle exec rake test
       env:
         RAILS_VERSION: ${{ matrix.rails }}
