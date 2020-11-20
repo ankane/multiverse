@@ -27,7 +27,7 @@ class MultiverseTest < Minitest::Test
           gemfile = File.read("Gemfile").sub("'sqlite3'", "'sqlite3', '< 1.4.0'")
           File.open("Gemfile", "w") {|file| file.puts(gemfile) }
         elsif rails_version.to_f < 6.1
-          gemfile = File.read("Gemfile").sub("'sqlite3'", "'sqlite3', '~> 1.4'")
+          gemfile = File.read("Gemfile").sub("'sqlite3'", "'sqlite3', '< 1.5.0'")
           File.open("Gemfile", "w") {|file| file.puts(gemfile) }
         end
 
