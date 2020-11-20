@@ -8,7 +8,7 @@ Plus, it’s easy to [upgrade to Rails 6](#upgrading-to-rails-6) when you get th
 
 Works with Rails 4.2+
 
-[![Build Status](https://travis-ci.org/ankane/multiverse.svg?branch=master)](https://travis-ci.org/ankane/multiverse)
+[![Build Status](https://github.com/ankane/multiverse/workflows/build/badge.svg?branch=master)](https://github.com/ankane/multiverse/actions)
 
 ## Installation
 
