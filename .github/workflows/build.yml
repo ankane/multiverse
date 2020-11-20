@@ -9,11 +9,11 @@ jobs:
       matrix:
         include:
         - ruby: 2.7
-          rails: 6.0.3.2
+          rails: 6.0.3.4
         - ruby: 2.6
-          rails: 5.2.4.3
+          rails: 5.2.4.4
         - ruby: 2.6
-          rails: 5.2.4.3
+          rails: 5.2.4.4
           flags: --api
         - ruby: 2.5
           rails: 5.1.7
