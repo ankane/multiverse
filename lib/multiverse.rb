@@ -7,13 +7,22 @@ module Multiverse
     attr_writer :db
 
     def db
-      @db ||= ENV["DB"].presence
+      @db ||= begin
+        if db_name = ENV["DB"].presence
+          path = "#{Rails.application.config.paths["db"].first}/#{db_name}"
+
+          if Dir.exist?(path)
+            db_name
+          else
+            warn "Warning: Unknown DB #{db_name}" unless Dir.exist?(path)
+            nil
+          end
+        end
+      end
     end
 
     def db_dir
-      db_dir = "#{Rails.application.config.paths["db"].first}/#{db}"
-      abort "Unknown DB: #{db}" unless Dir.exist?(db_dir)
-      db_dir
+      "#{Rails.application.config.paths["db"].first}/#{db}"
     end
 
     def parent_class_name
